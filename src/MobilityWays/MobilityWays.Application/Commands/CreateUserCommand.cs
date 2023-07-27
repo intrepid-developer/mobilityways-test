@@ -35,8 +35,11 @@ public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand
         //Check if the User Exists, this could also be part of Validate
         CheckIfUserExists(request.Email.Trim());
 
+        //Hash the users password
+        string passwordHash  = BCrypt.Net.BCrypt.HashPassword(request.Password);
+
         //User is valid so create it
-        _userStore.Users.Add(new Entities.User(request.Name, request.Email, request.Password));
+        _userStore.Users.Add(new Entities.User(request.Name, request.Email, passwordHash));
 
         //Save Changes
         await _userStore.SaveChangesAsync(cancellationToken);
@@ -68,14 +71,13 @@ public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand
 
 public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {
-    // I know there was no requirement for Password Length or Validation Rules I thought it would be good to show how it could be done
+    // I know there was no requirement for validation rules but I believe it's always best to validate the input
     public CreateUserCommandValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty()
             .MaximumLength(100)
             .WithMessage("Name is too long");
-
 
         RuleFor(x => x.Email)
             .NotEmpty()

@@ -74,14 +74,15 @@ public static class UserEndpoints
                 try
                 {
                     //Get the Claims from the principal
-                    var currentIdentity = (ClaimsIdentity)httpContext.User.Identity;
+                    ClaimsIdentity? currentIdentity = (ClaimsIdentity?)httpContext?.User?.Identity;
+                    ArgumentNullException.ThrowIfNull(currentIdentity);
 
+                    //Extract Claims from principal
                     var name = currentIdentity?.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Name)?.Value ?? string.Empty;
                     var email = currentIdentity?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value ?? string.Empty;
 
                     //Check they match a registered user
                     var userIsValid = await mediator.Send(new CheckUserIsValidQuery() { Email = email, Name = name }, cancellationToken);
-
                     if (!userIsValid)
                     {
                         return Results.Forbid();

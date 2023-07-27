@@ -3,13 +3,13 @@ using MobilityWays.Application.Exceptions;
 using MobilityWays.Application.Persistence;
 
 namespace MobilityWays.Application.Queries;
-public class CheckUserIsValidQuery : IRequest<bool>
+public sealed class CheckUserIsValidQuery : IRequest<bool>
 {
-    public string Email { get; set; }
-    public string Name { get; set; }
+    public required string Email { get; set; }
+    public required string Name { get; set; }
 }
 
-public class GetUserFromClaimsQueryHandler : IRequestHandler<CheckUserIsValidQuery, bool>
+public sealed class GetUserFromClaimsQueryHandler : IRequestHandler<CheckUserIsValidQuery, bool>
 {
     private readonly IUserStore _userStore;
 

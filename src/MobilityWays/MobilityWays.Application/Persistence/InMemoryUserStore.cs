@@ -1,9 +1,9 @@
 ﻿using MobilityWays.Application.Entities;
 
 namespace MobilityWays.Application.Persistence;
-public class InMemoryUserStore : IUserStore
+public sealed class InMemoryUserStore : IUserStore
 {
-    //Make this thread safe as will be singleton
+    //Making this thread safe as will be singleton
     private readonly SemaphoreSlim _lockObj = new SemaphoreSlim(1, 1);
     private readonly List<User> _users = new();
 

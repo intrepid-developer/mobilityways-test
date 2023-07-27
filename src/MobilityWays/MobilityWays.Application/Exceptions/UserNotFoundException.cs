@@ -1,4 +1,6 @@
 ﻿namespace MobilityWays.Application.Exceptions;
-public class UserNotFoundException : Exception
+
+//Custom exceptions help to better manage and identify problems
+public sealed class UserNotFoundException : Exception
 {
 }

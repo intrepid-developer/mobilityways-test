@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace MobilityWays.Application.Exceptions;
 
-namespace MobilityWays.Application.Exceptions;
-public class InvalidUserException : Exception
+//Custom exceptions help to better manage and identify problems
+public sealed class InvalidUserException : Exception
 {
-    public InvalidUserException(string errorMessage): base(errorMessage)
+    public InvalidUserException(string errorMessage) : base(errorMessage)
     {
-        
+
     }
 }

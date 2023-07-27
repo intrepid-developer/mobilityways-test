@@ -6,7 +6,7 @@ using System.Text;
 namespace MobilityWays.Application.Helpers;
 
 //JWT Helper class to create and decode JWTs 
-public class JwtHelper
+public static class JwtHelper
 {
     //Static class to generate the Jwt with the name and email claims
     public static string GenerateJwt(string name, string email, string secretKey)
@@ -16,7 +16,6 @@ public class JwtHelper
                 new Claim(JwtRegisteredClaimNames.Name, name),
                 new Claim(JwtRegisteredClaimNames.Email, email)
             };
-
 
         //Create Signing Key based on secret
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
@@ -30,6 +29,7 @@ public class JwtHelper
                 signingCredentials: creds
             );
 
+        //Create the token
         var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
         //return the jwt

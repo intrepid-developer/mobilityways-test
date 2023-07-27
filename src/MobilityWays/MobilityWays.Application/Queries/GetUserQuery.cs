@@ -3,10 +3,10 @@ using MobilityWays.Application.Exceptions;
 using MobilityWays.Application.Persistence;
 
 namespace MobilityWays.Application.Queries;
-public class GetUserQuery : IRequest<GetUserQuery.Result>
+public sealed class GetUserQuery : IRequest<GetUserQuery.Result>
 {
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public required string Email { get; set; }
+    public required string Password { get; set; }
 
     public class Result
     {
@@ -20,7 +20,7 @@ public class GetUserQuery : IRequest<GetUserQuery.Result>
     }
 }
 
-public class GetUserQueryHandler : IRequestHandler<GetUserQuery, GetUserQuery.Result>
+public sealed class GetUserQueryHandler : IRequestHandler<GetUserQuery, GetUserQuery.Result>
 {
     private readonly IUserStore _userStore;
 
@@ -31,16 +31,20 @@ public class GetUserQueryHandler : IRequestHandler<GetUserQuery, GetUserQuery.Re
 
     public async Task<GetUserQuery.Result> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
-        var user = _userStore.Users.Where(_ => _.Email.Equals(request.Email, StringComparison.InvariantCultureIgnoreCase)
-                                            && _.Password.Equals(request.Password))
-                                    .Select(_ => new GetUserQuery.Result(_.Name, _.Email))
+        var user = _userStore.Users.Where(_ => _.Email.Equals(request.Email, StringComparison.InvariantCultureIgnoreCase))
                                     .FirstOrDefault();
-
         if (user == null)
         {
             throw new UserNotFoundException();
         }
 
-        return user;
+        //Verify the Users Password against the hash
+        if (!BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
+        {
+            //Throw User Not Found so that we don't let a potential attacker know the password is incorrect;
+            throw new UserNotFoundException();
+        }
+
+        return new GetUserQuery.Result(user.Name, user.Email);
     }
 }

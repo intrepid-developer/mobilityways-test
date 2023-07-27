@@ -2,7 +2,7 @@
 using MobilityWays.Application.Persistence;
 
 namespace MobilityWays.Application.Queries;
-public class GetUsersQuery : IRequest<IEnumerable<GetUsersQuery.Result>>
+public sealed class GetUsersQuery : IRequest<IEnumerable<GetUsersQuery.Result>>
 {
     public class Result
     {
@@ -16,7 +16,7 @@ public class GetUsersQuery : IRequest<IEnumerable<GetUsersQuery.Result>>
     }
 }
 
-public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<GetUsersQuery.Result>>
+public sealed class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<GetUsersQuery.Result>>
 {
     private readonly IUserStore _userStore;
 
